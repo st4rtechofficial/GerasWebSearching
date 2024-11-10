@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Browser</title>
+</head>
+<style>
+body {
+    background: rgb(24, 54, 85);
+    font-family: Arial, sans-serif;
+}
+h1 {
+    color: azure;
+    margin-top: 150px;
+    text-align: center;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    width: 750px;
+}
+
+.search-button {
+    background-color: rgb(200, 200, 200);
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 8px 0 0 8px;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.search-button:hover {
+    background-color: rgb(180, 180, 180);
+}
+
+.search-button img {
+    width: 20px;
+    height: 20px;
+}
+
+input.round2 {
+    border: 2px solid rgb(0, 0, 0);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    padding: 10px;
+    background-color: aliceblue;
+    width: 100%;
+    font-size: 18px;
+}
+
+.suggestions {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 750px;
+    margin: 0 auto;
+    text-align: left;
+    position: relative;
+    top: -10px;
+    z-index: 100;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #e9e9e9;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+</style>
+<body>
+
+<h1 title="Tik op het kader hieronder om te beginnen met zoeken.">Wat wil je opzoeken?</h1>
+
+<div class="search-container">
+    <!-- Zoekknop met vergrootglas -->
+    <button class="search-button" onclick="performSearch()">
+        <img src="https://img.icons8.com/ios-filled/50/000000/search--v1.png" alt="Search">
+    </button>
+    
+    <!-- Zoekveld -->
+    <input type="text" class="round2" id="search-input" placeholder="Typ hier om te zoeken..." oninput="showSuggestions(this.value)">
+</div>
+
+<div class="suggestions" id="suggestions-container"></div>
+<div class="error-message" id="error-message"></div>
+
+<script>
+const suggestions = {
+    "Open youtube": "https://www.youtube.com",
+    "Wanneer is de zevende dag op tv?": "https://www.bing.com/search?q=wanneer+is+de+zevende+dag+op+vrt%3F&PC=U316&FORM=CHROMN",
+    "Filmpjes over mijn volkswagen tiguan.": "https://www.youtube.com/watch?v=wUyk2fsUA3c&list=PL0U0l41x-1x8qCrZK3RkITVnU_uZ5d51L"
+};
+
+function showSuggestions(query) {
+    const container = document.getElementById("suggestions-container");
+    container.innerHTML = ""; 
+
+    if (query.length === 0) {
+        return; 
+    }
+
+    const filteredSuggestions = Object.keys(suggestions).filter(suggestion => 
+        suggestion.toLowerCase().includes(query.toLowerCase())
+    );
+
+    filteredSuggestions.forEach(suggestion => {
+        const suggestionItem = document.createElement("div");
+        suggestionItem.classList.add("suggestion-item");
+        suggestionItem.textContent = suggestion;
+
+        suggestionItem.onclick = () => {
+            document.getElementById("search-input").value = suggestion;
+            container.innerHTML = ""; 
+        };
+
+        container.appendChild(suggestionItem);
+    });
+}
+
+function performSearch() {
+    const query = document.getElementById("search-input").value;
+    const errorMessage = document.getElementById("error-message");
+
+    if (suggestions[query]) {
+        // Reset foutmelding en ga naar de URL die overeenkomt met de suggestie
+        errorMessage.textContent = "";
+        window.location.href = suggestions[query];
+    } else {
+        // Toon foutmelding als de invoer geen geldige suggestie is
+        errorMessage.textContent = "Dit onderwerp is nog niet toegevoegd. Vraag hulp om dit in de toekomst beschikbaar te maken.";
+    }
+}
+</script>
+
+</body>
+</html>
